@@ -6,8 +6,16 @@ set(CMAKE_CXX_STANDARD 20)
 find_package(BISON)
 find_package(FLEX)
 
-BISON_TARGET(Parser src/parser.y ${CMAKE_CURRENT_BINARY_DIR}/Parser.cpp DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/Parser.hpp)
-FLEX_TARGET(Scanner src/lexer.l ${CMAKE_CURRENT_BINARY_DIR}/Scanner.cpp DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/Scanner.hpp)
+BISON_TARGET(Parser
+        src/parser.y
+        ${CMAKE_CURRENT_BINARY_DIR}/Parser.cpp
+        DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/Parser.hpp
+)
+FLEX_TARGET(Scanner
+        src/lexer.l
+        ${CMAKE_CURRENT_BINARY_DIR}/Scanner.cpp
+        DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/Scanner.hpp
+)
 ADD_FLEX_BISON_DEPENDENCY(Scanner Parser)
 
 add_executable(SysProg_Lab5
