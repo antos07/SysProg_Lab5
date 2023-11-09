@@ -99,5 +99,5 @@ fexp    : FLT                       { $$ = $1; }
 %%
 
 void calc::Parser::error(const std::string& msg) {
-    std::cerr << msg << '\n';
+    std::cerr << "Line " << scanner->lineno() << ": " << msg << '\n';
 }

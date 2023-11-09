@@ -24,7 +24,5 @@ int main (int argc, char *argv[]) {
 
     calc::Scanner scanner{sourceFile, std::cerr};
     calc::Parser parser{&scanner};
-    parser.parse();
-
-    return EXIT_SUCCESS;
+    return parser.parse();
 }

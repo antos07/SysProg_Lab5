@@ -2,9 +2,10 @@
 #include "Parser.hpp"
 #include "Scanner.hpp"
 #define YY_DECL int calc::Scanner::lex(calc::Parser::semantic_type *yylval)
+#define YYERROR_VERBOSE 1
 %}
 
-%option c++ noyywrap outfile="Scanner.cpp"
+%option c++ noyywrap yylineno outfile="Scanner.cpp"
 
 dseq            ([[:digit:]]+)
 dseq_opt        ({dseq}?)
