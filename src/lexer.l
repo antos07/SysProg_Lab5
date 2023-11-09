@@ -4,7 +4,7 @@
 #define YY_DECL int calc::Scanner::lex(calc::Parser::semantic_type *yylval)
 %}
 
-%option c++ interactive noyywrap noyylineno nodefault outfile="Scanner.cpp"
+%option c++ noyywrap outfile="Scanner.cpp"
 
 dseq            ([[:digit:]]+)
 dseq_opt        ({dseq}?)
@@ -41,11 +41,4 @@ fltvar          ([[:lower:]])
 
 int yyFlexLexer::yylex() {
     throw std::runtime_error("Bad call to yyFlexLexer::yylex()");
-}
-
-int main() {
-    calc::Scanner scanner{ std::cin, std::cerr };
-    calc::Parser parser{ &scanner };
-    std::cout.precision(10);
-    parser.parse();
 }

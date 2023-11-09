@@ -5,7 +5,7 @@
 #include <FlexLexer.h>
 %}
 
-%require "3.7.4"
+%require "3.8.2"
 %language "C++"
 %defines "Parser.hpp"
 %output "Parser.cpp"
@@ -13,6 +13,7 @@
 %define api.parser.class {Parser}
 %define api.namespace {calc}
 %define api.value.type variant
+%define parse.error detailed
 %parse-param {Scanner* scanner}
 
 %code requires
