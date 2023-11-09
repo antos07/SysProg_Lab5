@@ -7,36 +7,26 @@
 
 %option c++ noyywrap yylineno outfile="Scanner.cpp"
 
-dseq            ([[:digit:]]+)
-dseq_opt        ({dseq}?)
-frac            (({dseq_opt}"."{dseq})|{dseq}".")
-exp             ([eE][+-]?{dseq})
-exp_opt         ({exp}?)
-
-integer         ({dseq})
-float           (({frac}{exp_opt})|({dseq}{exp}))
-intvar          ([[:upper:]])
-fltvar          ([[:lower:]])
+identifier        ([[a-zA-Z_]\w*)
 
 %%
 
-{integer}       yylval->emplace<long long>(strtoll(YYText(), nullptr, 10)); return Parser::token::INT;
-{float}         yylval->emplace<double>(strtod(YYText(), nullptr)); return Parser::token::FLT;
-{intvar}        yylval->emplace<char>(YYText()[0]); return Parser::token::INTVAR;
-{fltvar}        yylval->emplace<char>(YYText()[0]); return Parser::token::FLTVAR;
-"+"             return Parser::token::PLUS;
-"-"             return Parser::token::MINUS;
-"*"             return Parser::token::MULTIPLY;
-"/"             return Parser::token::DIVIDE;
-"%"             return Parser::token::MODULO;
-"!"             return Parser::token::FACTORIAL;
-"^"             return Parser::token::EXPONENT;
-"("             return Parser::token::LPAREN;
-")"             return Parser::token::RPAREN;
-"="             return Parser::token::ASSIGN;
-\n              return Parser::token::EOL;
-<<EOF>>         return Parser::token::YYEOF;
-.               /* no action on unmatched input */
+";"               { return Parser::token::SEMICOLON; }
+
+{identifier}      { yylval->emplace<std::string>(YYText()); return Parser::token::IDENTIFIER; }
+
+"void"            { return Parser::token::VOID; }
+"char"            { return Parser::token::CHAR; }
+"short"           { return Parser::token::SHORT; }
+"int"             { return Parser::token::INT; }
+"long"            { return Parser::token::LONG; }
+"float"           { return Parser::token::FLOAT; }
+"double"          { return Parser::token::DOUBLE; }
+"signed"          { return Parser::token::SIGNED; }
+"unsigned"        { return Parser::token::UNSIGNED; }
+
+<<EOF>>           { return Parser::token::YYEOF; }
+[[:space:]]       /* no action for whitespaces */
 
 %%
 
