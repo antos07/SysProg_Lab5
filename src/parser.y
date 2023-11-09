@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 #include <cmath>
-#include "Scanner.hpp"
+#include <FlexLexer.h>
 %}
 
 %require "3.7.4"
@@ -13,13 +13,19 @@
 %define api.parser.class {Parser}
 %define api.namespace {calc}
 %define api.value.type variant
-%param {yyscan_t scanner}
+%parse-param {Scanner* scanner}
 
-%code provides
+%code requires
 {
-    #define YY_DECL \
-        int yylex(calc::Parser::semantic_type *yylval, yyscan_t yyscanner)
-    YY_DECL;
+    namespace calc {
+        class Scanner;
+    } // namespace calc
+} // %code requires
+
+%code
+{
+    #include "Scanner.hpp"
+    #define yylex(x) scanner->lex(x)
 }
 
 %token              EOL LPAREN RPAREN
@@ -47,9 +53,7 @@
             if (n < 2) {
                 return 1;
             }
-            else {
-                return n * factorial(n - 1);
-            }
+            return n * factorial(n - 1);
         }
     } // namespace calc
 } // %code
