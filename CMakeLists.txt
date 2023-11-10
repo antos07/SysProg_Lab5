@@ -9,12 +9,13 @@ find_package(FLEX)
 bison_target(Parser
         src/parser.y
         ${CMAKE_CURRENT_BINARY_DIR}/Parser.cpp
+        COMPILE_FLAGS "--graph --debug"
         DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/Parser.hpp
+        VERBOSE
 )
 flex_target(Scanner
         src/lexer.l
         ${CMAKE_CURRENT_BINARY_DIR}/Scanner.cpp
-#        DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/Scanner.hpp
 )
 add_flex_bison_dependency(Scanner Parser)
 
