@@ -1,19 +1,34 @@
 %{
 #include "Parser.hpp"
 #include "Scanner.hpp"
-#define YY_DECL int calc::Scanner::lex(calc::Parser::semantic_type *yylval)
+#define YY_DECL int parsing::Scanner::lex(parsing::Parser::semantic_type *yylval)
 #define YYERROR_VERBOSE 1
 %}
 
 %option c++ noyywrap yylineno outfile="Scanner.cpp"
 
-identifier              ([[a-zA-Z_]\w*)
-string                  (\"[^\n"]*\")
-integer_constant        ((?:[1-9]\d*|0[xX][\da-fA-F]+|0[0-7]*)(?:[uU][lL]?|[lL][uU]?)?)
-character_constant      (\'(?:\w|\\\S+)\')
-floating_constant       ((?:\d*\.\d+(?:[eE][+-]?\d+)?|\d+\.|\d+[eE][+-]?\d+)(?:[uU][lL]?|[lL][uU]?)?)
+O                       [0-7]
+D                       [0-9]
+NZ                      [1-9]
+L                       [a-zA-Z_]
+A                       [a-zA-Z_0-9]
+H                       [a-fA-F0-9]
+HP                      (0[xX])
+E                       ([Ee][+-]?{D}+)
+P                       ([Pp][+-]?{D}+)
+FS                      (f|F|l|L)
+IS                      (((u|U)(l|L|ll|LL)?)|((l|L|ll|LL)(u|U)?))
+SP                      (u8|u|U|L)
+ES                      (\\(['"\?\\abfnrtv]|[0-7]{1,3}|x[a-fA-F0-9]+))
+WS                      [ \t\v\n\f]
+
+character_constant      ((?:u|U|L)?'(?:[^'\\\n]|(?:\\(['"\?\\abfnrtv]|[0-7]{1,3}|x[a-fA-F0-9]+)))+')
 
 %%
+
+"/*"(?:.|\n)*"*/"       /* do nothing */
+"//"*                   /* do nothing */
+"#".*                   /* skip prepocessor */
 
 ","                     { return Parser::token::COMMA; }
 ":"                     { return Parser::token::COLON; }
@@ -78,6 +93,7 @@ floating_constant       ((?:\d*\.\d+(?:[eE][+-]?\d+)?|\d+\.|\d+[eE][+-]?\d+)(?:[
 "double"                { return Parser::token::DOUBLE; }
 "signed"                { return Parser::token::SIGNED; }
 "unsigned"              { return Parser::token::UNSIGNED; }
+"bool"                  { return Parser::token::BOOL; }
 
 "auto"                  { return Parser::token::AUTO; }
 "register"              { return Parser::token::REGISTER; }
@@ -85,8 +101,11 @@ floating_constant       ((?:\d*\.\d+(?:[eE][+-]?\d+)?|\d+\.|\d+[eE][+-]?\d+)(?:[
 "extern"                { return Parser::token::EXTERN; }
 "typedef"               { return Parser::token::TYPEDEF; }
 
+"inline"                { return Parser::token::INLINE; }
+
 "const"                 { return Parser::token::CONST; }
 "volatile"              { return Parser::token::VOLATILE; }
+"restrict"              { return Parser::token::RESTRICT; }
 
 "enum"                  { return Parser::token::ENUM; }
 "struct"                { return Parser::token::STRUCT; }
@@ -104,11 +123,23 @@ floating_constant       ((?:\d*\.\d+(?:[eE][+-]?\d+)?|\d+\.|\d+[eE][+-]?\d+)(?:[
 "break"				    { return Parser::token::BREAK; }
 "return"			    { return Parser::token::RETURN; }
 
-{identifier}            { yylval->emplace<std::string>(YYText()); return Parser::token::IDENTIFIER; }
-{string}                { yylval->emplace<std::string>(YYText()); return Parser::token::STRING; }
-{integer_constant}      { yylval->emplace<std::string>(YYText()); return Parser::token::INTEGER_CONSTANT; }
-{character_constant}    { yylval->emplace<std::string>(YYText()); return Parser::token::CHARACTER_CONSTANT; }
-{floating_constant}     { yylval->emplace<std::string>(YYText()); return Parser::token::FLOATING_CONSTANT; }
+{L}{A}*                 { yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::IDENTIFIER; }
+
+{HP}{H}+{IS}?           { yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::INTEGER_CONSTANT; }
+{NZ}{D}*{IS}?           { yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::INTEGER_CONSTANT; }
+"0"{O}*{IS}?            { yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::INTEGER_CONSTANT; }
+{character_constant}    { yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::INTEGER_CONSTANT; }
+
+{D}+{E}{FS}?			{ yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::FLOATING_CONSTANT; }
+{D}*"."{D}+{E}?{FS}?	{ yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::FLOATING_CONSTANT; }
+{D}+"."{E}?{FS}?		{ yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::FLOATING_CONSTANT; }
+{HP}{H}+{P}{FS}?		{ yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::FLOATING_CONSTANT; }
+{HP}{H}*"."{H}+{P}{FS}?	{ yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::FLOATING_CONSTANT; }
+{HP}{H}+"."{P}{FS}?		{ yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::FLOATING_CONSTANT; }
+
+({SP}?\"([^"\\\n]|{ES})*\"{WS}*)+	{ yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::STRING; }
+
+
 <<EOF>>                 { return Parser::token::YYEOF; }
 [[:space:]]             /* no action for whitespaces */
 

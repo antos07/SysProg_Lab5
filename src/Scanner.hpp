@@ -13,7 +13,7 @@
 
 #include "Parser.hpp"
 
-namespace calc { // note: depends upon FlexLexer.h and Parser2.hpp
+namespace parsing { // note: depends upon FlexLexer.h and Parser2.hpp
 
     class Scanner : public yyFlexLexer {
     public:
@@ -26,6 +26,6 @@ namespace calc { // note: depends upon FlexLexer.h and Parser2.hpp
         int lex(Parser::semantic_type *yylval); // note: this is the prototype we need
     };
 
-} // namespace calc
+} // namespace parsing
 
 #endif //SYSPROG_LAB5_SCANNER_HPP

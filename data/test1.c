@@ -1,4 +1,4 @@
-int main() {
+int main () {
     char c[1000];
     FILE *fptr;
     if ((fptr = fopen("program.txt", "r")) == NULL) {
