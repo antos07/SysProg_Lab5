@@ -24,7 +24,5 @@ int main (int argc, char *argv[]) {
 
     parsing::Scanner scanner{sourceFile, std::cerr};
     parsing::Parser parser{&scanner};
-    parser.set_debug_stream(std::cout);
-    parser.set_debug_level(1);
     return parser.parse();
 }

@@ -137,7 +137,7 @@ character_constant      ((?:u|U|L)?'(?:[^'\\\n]|(?:\\(['"\?\\abfnrtv]|[0-7]{1,3}
 {HP}{H}*"."{H}+{P}{FS}?	{ yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::FLOATING_CONSTANT; }
 {HP}{H}+"."{P}{FS}?		{ yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::FLOATING_CONSTANT; }
 
-({SP}?\"([^"\\\n]|{ES})*\"{WS}*)+	{ yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::STRING; }
+["]([^"\\\n]|\\.|\\\n)*["]	{ yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::STRING; }
 
 
 <<EOF>>                 { return Parser::token::YYEOF; }
