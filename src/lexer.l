@@ -123,21 +123,21 @@ character_constant      ((?:u|U|L)?'(?:[^'\\\n]|(?:\\(['"\?\\abfnrtv]|[0-7]{1,3}
 "break"				    { return Parser::token::BREAK; }
 "return"			    { return Parser::token::RETURN; }
 
-{L}{A}*                 { yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::IDENTIFIER; }
+{L}{A}*                 { yylval->emplace<std::string>(YYText()); return Parser::token::IDENTIFIER; }
 
-{HP}{H}+{IS}?           { yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::INTEGER_CONSTANT; }
-{NZ}{D}*{IS}?           { yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::INTEGER_CONSTANT; }
-"0"{O}*{IS}?            { yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::INTEGER_CONSTANT; }
-{character_constant}    { yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::INTEGER_CONSTANT; }
+{HP}{H}+{IS}?           { yylval->emplace<std::string>(YYText()); return Parser::token::INTEGER_CONSTANT; }
+{NZ}{D}*{IS}?           { yylval->emplace<std::string>(YYText()); return Parser::token::INTEGER_CONSTANT; }
+"0"{O}*{IS}?            { yylval->emplace<std::string>(YYText()); return Parser::token::INTEGER_CONSTANT; }
+{character_constant}    { yylval->emplace<std::string>(YYText()); return Parser::token::INTEGER_CONSTANT; }
 
-{D}+{E}{FS}?			{ yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::FLOATING_CONSTANT; }
-{D}*"."{D}+{E}?{FS}?	{ yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::FLOATING_CONSTANT; }
-{D}+"."{E}?{FS}?		{ yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::FLOATING_CONSTANT; }
-{HP}{H}+{P}{FS}?		{ yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::FLOATING_CONSTANT; }
-{HP}{H}*"."{H}+{P}{FS}?	{ yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::FLOATING_CONSTANT; }
-{HP}{H}+"."{P}{FS}?		{ yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::FLOATING_CONSTANT; }
+{D}+{E}{FS}?			{ yylval->emplace<std::string>(YYText()); return Parser::token::FLOATING_CONSTANT; }
+{D}*"."{D}+{E}?{FS}?	{ yylval->emplace<std::string>(YYText()); return Parser::token::FLOATING_CONSTANT; }
+{D}+"."{E}?{FS}?		{ yylval->emplace<std::string>(YYText()); return Parser::token::FLOATING_CONSTANT; }
+{HP}{H}+{P}{FS}?		{ yylval->emplace<std::string>(YYText()); return Parser::token::FLOATING_CONSTANT; }
+{HP}{H}*"."{H}+{P}{FS}?	{ yylval->emplace<std::string>(YYText()); return Parser::token::FLOATING_CONSTANT; }
+{HP}{H}+"."{P}{FS}?		{ yylval->emplace<std::string>(YYText()); return Parser::token::FLOATING_CONSTANT; }
 
-["]([^"\\\n]|\\.|\\\n)*["]	{ yylval->emplace<std::string>(YYText()); std::cout << "DEBUG: " << YYText() << '\n'; return Parser::token::STRING; }
+["]([^"\\\n]|\\.|\\\n)*["]	{ yylval->emplace<std::string>(YYText());  return Parser::token::STRING; }
 
 
 <<EOF>>                 { return Parser::token::YYEOF; }
