@@ -2,6 +2,7 @@
 // Created by antos07 on 11/13/23.
 //
 
+#include <cassert>
 #include <utility>
 #include "TreeNode.hpp"
 
@@ -29,7 +30,7 @@ void TreeNode::print(std::ostream &out, std::size_t indent_size) const {
 }
 
 void TreeNode::append_child(std::unique_ptr<TreeNode> &&child) {
-    children_.emplace_back(std::move(child));
+  children_.emplace_back(std::move(child));
 }
 
 std::unique_ptr<TreeNode> make_node(std::string name) {
