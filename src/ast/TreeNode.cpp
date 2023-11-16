@@ -33,6 +33,18 @@ void TreeNode::append_child(std::unique_ptr<TreeNode> &&child) {
   children_.emplace_back(std::move(child));
 }
 
+std::vector<const TreeNode *> TreeNode::children() const {
+  std::vector<const TreeNode *> children{};
+  for (const auto &child : children_) {
+    children.emplace_back(child.get());
+  }
+  return children;
+}
+
+const std::string &TreeNode::name() const {
+  return name_;
+}
+
 std::unique_ptr<TreeNode> make_node(std::string name) {
   return std::make_unique<TreeNode>(std::move(name));
 }

@@ -24,6 +24,10 @@ class TreeNode {
 
   void append_child(std::unique_ptr<TreeNode> &&child);
 
+  [[nodiscard]] std::vector<const TreeNode *> children() const;
+
+  const std::string &name() const;
+
   void print(std::ostream &out) const;
 
  private:

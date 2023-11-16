@@ -10,6 +10,7 @@
 #include "Scanner.hpp"
 #include "cli.hpp"
 #include "ast/TreeNode.hpp"
+#include "ast/TreeVisualizer.hpp"
 
 int main(int argc, char *argv[]) {
   if (argc != 2 && argc != 3) {
@@ -35,7 +36,8 @@ int main(int argc, char *argv[]) {
   if (parser.parse()) {
     return EXIT_FAILURE;
   }
+  ast::TreeVisualizer visualizer{};
+  visualizer.to_png(ast.get(), "ast.png");
 
-  ast->print(std::cout);
   return EXIT_SUCCESS;
 }
