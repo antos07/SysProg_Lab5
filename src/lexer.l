@@ -27,7 +27,7 @@ character_constant      ((?:u|U|L)?'(?:[^'\\\n]|(?:\\(['"\?\\abfnrtv]|[0-7]{1,3}
 %%
 
 "/*"(?:.|\n)*"*/"       /* do nothing */
-"//"*                   /* do nothing */
+"//".*                   /* do nothing */
 "#".*                   /* skip prepocessor */
 
 ","                     { return Parser::token::COMMA; }
